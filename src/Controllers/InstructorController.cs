@@ -71,5 +71,10 @@ namespace Workforce.Controllers
 				return View(instructors.Values);
 			}
 		}
+
+		public async Task<IActionResult> Details(int? id)
+		{
+			return View();
+		}
 	}
 }
