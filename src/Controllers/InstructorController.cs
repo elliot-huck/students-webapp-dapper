@@ -103,7 +103,47 @@ namespace Workforce.Controllers
 			}
 		}
 
+		[HttpGet]
+		public async Task<IActionResult> Edit (int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
 
+			string sql = $@"
+			SELECT
+                    i.Id,
+                    i.FirstName,
+                    i.LastName,
+					i.Specialty,
+                    i.SlackHandle,
+                    i.CohortId,
+                    c.Id,
+                    c.Name
+			FROM Instructor i
+            JOIN Cohort c on i.CohortId = c.Id
+            WHERE i.Id = {id}
+			";
+
+			using (IDbConnection taco = Connection)
+			{
+				InstructorEditViewModel viewModel = new InstructorEditViewModel(_config);
+
+				viewModel.Instructor = (await taco.QueryAsync<Instructor, Cohort, Instructor>
+				(
+					sql,
+					(teacher, group) =>
+					{
+						teacher.Cohort = group;
+						return teacher;
+					}
+				)).Single();
+
+				return View(viewModel);
+
+			}
+		}
 
 
 	}
