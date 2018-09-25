@@ -74,7 +74,37 @@ namespace Workforce.Controllers
 
 		public async Task<IActionResult> Details(int? id)
 		{
-			return View();
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			string sql = $@"
+            select
+                i.Id,
+                i.FirstName,
+                i.LastName,
+                i.SlackHandle,
+				i.Specialty
+            from Instructor i
+            WHERE i.Id = {id}";
+
+			using (IDbConnection conn = Connection)
+			{
+				Instructor teacher = (await conn.QueryAsync<Instructor>(sql)).ToList().Single();
+
+				if (teacher == null)
+				{
+					return NotFound();
+				}
+
+			return View(teacher);
+
+			}
 		}
+
+
+
+
 	}
 }
