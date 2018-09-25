@@ -55,9 +55,20 @@ namespace Workforce.Controllers
 			{
 				Dictionary<int, Instructor> instructors = new Dictionary<int, Instructor>();
 
-				var instructorQuerySet = await conn.QueryAsync<Instructor, Cohort, Instructor> (
-					sql, 
-					)
+				var instructorQuerySet = await conn.QueryAsync<Instructor, Cohort, Instructor>(
+					sql,
+					(instructor, cohort) =>
+					{
+						if (!instructors.ContainsKey(instructor.Id))
+						{
+							instructors[instructor.Id] = instructor;
+						}
+						instructors[instructor.Id].Cohort = cohort;
+						return instructor;
+					}
+				);
+
+				return View(instructors.Values);
 			}
 		}
 	}
