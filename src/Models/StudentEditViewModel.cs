@@ -24,7 +24,7 @@ namespace Workforce.Models.ViewModels
 
         public IDbConnection Connection {
             get {
-                return new SqliteConnection (_config.GetConnectionString ("DefaultConnection"));
+                return new SqlConnection (_config.GetConnectionString ("DefaultConnection"));
             }
         }
 

@@ -10,5 +10,8 @@
   </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>Workforce</ActiveDebugProfile>
+    <_SelectedScaffolderID>Microsoft.AspNet.Scaffolding.Mvc.RazorPageScaffolder</_SelectedScaffolderID>
+    <_SelectedScaffolderCategoryPath>root/Common</_SelectedScaffolderCategoryPath>
+    <WebStackScaffolding_ViewDialogWidth>600</WebStackScaffolding_ViewDialogWidth>
   </PropertyGroup>
 </Project>
