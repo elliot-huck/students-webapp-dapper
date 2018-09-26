@@ -104,6 +104,30 @@ namespace Workforce.Controllers
 		}
 
 		[HttpGet]
+		public async Task<IActionResult> Create()
+		{
+			using (IDbConnection taco = Connection)
+			{
+				InstructorEditViewModel viewModel = new InstructorEditViewModel(_config);
+
+				/*
+				viewModel.Instructor = (await taco.QueryAsync<Instructor, Cohort, Instructor>
+				(
+					sql,
+					(teacher, group) =>
+					{
+						teacher.Cohort = group;
+						return teacher;
+					}
+				)).Single(); 
+				*/
+
+				return View(viewModel);
+
+			}
+		}
+
+		[HttpGet]
 		public async Task<IActionResult> Edit (int? id)
 		{
 			if (id == null)

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Workforce.Models
+namespace Workforce.Models.ViewModels
 {
-	public class Class
+	public class InstructorCreateViewModel
 	{
+
+
 	}
 }
