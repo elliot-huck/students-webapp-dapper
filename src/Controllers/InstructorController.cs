@@ -145,6 +145,47 @@ namespace Workforce.Controllers
 			}
 		}
 
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit (int id, InstructorEditViewModel model)
+		{
+			if (id != model.Instructor.Id)
+			{
+				return NotFound();
+			}
+
+			if (!(ModelState.IsValid))
+			{
+				return new StatusCodeResult(StatusCodes.Status406NotAcceptable);
+			} else {
+				string sql = $@"
+				UPDATE Instructor 
+				SET 
+					FirstName = '{model.Instructor.FirstName}',
+					LastName = '{model.Instructor.LastName}',
+					Specialty = '{model.Instructor.Specialty}',
+					SlackHandle = '{model.Instructor.SlackHandle}',
+					CohortId = {model.Instructor.CohortId}
+				WHERE Id = {id}
+				";
+
+				using (IDbConnection conn = Connection)
+				{
+					int rowsAffected = await conn.ExecuteAsync(sql);
+
+					if (rowsAffected > 0)
+					{
+						return RedirectToAction(nameof(Index));
+					} else {
+						throw new Exception("No rows affected");					
+					}
+				}
+			}
+
+
+
+		}
+
 
 	}
 }
