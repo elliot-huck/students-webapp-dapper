@@ -133,14 +133,21 @@ namespace Workforce.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create(InstructorEditViewModel teacher)
+		public async Task<IActionResult> Create(InstructorCreateViewModel model)
 		{
-
-			Console.WriteLine(teacher.Instructor.FirstName);
+			Console.WriteLine();
+			Console.WriteLine();
+			Console.WriteLine(model.Instructor.FirstName);
+			Console.WriteLine(model.Instructor.LastName);
+			Console.WriteLine(model.Instructor.Specialty);
+			Console.WriteLine(model.Instructor.SlackHandle);
+			Console.WriteLine(model.Instructor.CohortId);
 			Console.WriteLine("Hello world");
 
-			if (ModelState.IsValid)
+			if (!(ModelState.IsValid))
 			{
+				throw new Exception("Model state invalid");
+			} else {
 				string sql = $@"
 				INSERT INTO Instructor (
 					FirstName, 
@@ -150,19 +157,19 @@ namespace Workforce.Controllers
 					CohortId
 				)
 				VALUES (
-					'{teacher.Instructor.FirstName}', 
-					'{teacher.Instructor.LastName}', 
-					'{teacher.Instructor.Specialty}', 
-					'{teacher.Instructor.SlackHandle}', 
-					{teacher.Instructor.CohortId}
+					'{model.Instructor.FirstName}', 
+					'{model.Instructor.LastName}', 
+					'{model.Instructor.Specialty}', 
+					'{model.Instructor.SlackHandle}', 
+					{model.Instructor.CohortId}
 				)";
 
-				Console.WriteLine(teacher.Instructor.FirstName);
-				Console.WriteLine("Hello world");
+				Console.WriteLine(model.Instructor.LastName);
+				Console.WriteLine("Goodbye world");
 
 				using (IDbConnection creating = Connection)
 				{
-					bool instructorAdded = (await creating.ExecuteAsync(sql)) > 0;
+					//bool instructorAdded = (await creating.ExecuteAsync(sql)) > 0;
 					int rowsAffected = await creating.ExecuteAsync(sql);
 					if (rowsAffected > 0)
 					{
@@ -170,6 +177,7 @@ namespace Workforce.Controllers
 					} else
 					{
 						Console.WriteLine("No rows affected");
+						//return View(teacher);
 						throw new Exception("No rows affected");
 					}
 				}
@@ -178,8 +186,9 @@ namespace Workforce.Controllers
 			// ModelState was invalid, or saving the Instructor data failed. Show the form again.
 			//InstructorEditViewModel currentInfo = new InstructorEditViewModel(_config);
 			//currentInfo.Instructor = teacher.Instructor;
-			//return RedirectToAction(nameof(Index));
-			return View(teacher);
+			
+			return RedirectToAction(nameof(Index));
+
 
 			/*
 			using (IDbConnection conn = Connection)
