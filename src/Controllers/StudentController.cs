@@ -117,10 +117,10 @@ namespace Workforce.Controllers {
             if (ModelState.IsValid) {
                 string sql = $@"
                     INSERT INTO Student
-                        ( Id, FirstName, LastName, SlackHandle, CohortId )
+                        ( FirstName, LastName, SlackHandle, CohortId )
                         VALUES
-                        ( null
-                            , '{student.FirstName}'
+                        (
+                             '{student.FirstName}'
                             , '{student.LastName}'
                             , '{student.SlackHandle}'
                             , {student.CohortId}

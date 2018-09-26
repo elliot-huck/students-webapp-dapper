@@ -103,14 +103,19 @@ namespace Workforce.Controllers
 			}
 		}
 
+		/* should this work with async Task<IActionResult>? or just ActionResult? */
 		[HttpGet]
-		public async Task<IActionResult> Create()
+		public IActionResult Create()
 		{
+			InstructorEditViewModel viewModel = new InstructorEditViewModel(_config);
+			return View(viewModel);
+
+			/*
 			using (IDbConnection taco = Connection)
 			{
+
 				InstructorEditViewModel viewModel = new InstructorEditViewModel(_config);
 
-				/*
 				viewModel.Instructor = (await taco.QueryAsync<Instructor, Cohort, Instructor>
 				(
 					sql,
@@ -119,13 +124,75 @@ namespace Workforce.Controllers
 						teacher.Cohort = group;
 						return teacher;
 					}
-				)).Single(); 
-				*/
+				)).Single();
 
 				return View(viewModel);
-
 			}
+			*/
 		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Create(InstructorEditViewModel teacher)
+		{
+
+			Console.WriteLine(teacher.Instructor.FirstName);
+			Console.WriteLine("Hello world");
+
+			if (ModelState.IsValid)
+			{
+				string sql = $@"
+				INSERT INTO Instructor (
+					FirstName, 
+					LastName, 
+					Specialty, 
+					SlackHandle, 
+					CohortId
+				)
+				VALUES (
+					'{teacher.Instructor.FirstName}', 
+					'{teacher.Instructor.LastName}', 
+					'{teacher.Instructor.Specialty}', 
+					'{teacher.Instructor.SlackHandle}', 
+					{teacher.Instructor.CohortId}
+				)";
+
+				Console.WriteLine(teacher.Instructor.FirstName);
+				Console.WriteLine("Hello world");
+
+				using (IDbConnection creating = Connection)
+				{
+					bool instructorAdded = (await creating.ExecuteAsync(sql)) > 0;
+					int rowsAffected = await creating.ExecuteAsync(sql);
+					if (rowsAffected > 0)
+					{
+						return RedirectToAction(nameof(Index));
+					} else
+					{
+						Console.WriteLine("No rows affected");
+						throw new Exception("No rows affected");
+					}
+				}
+			}
+
+			// ModelState was invalid, or saving the Instructor data failed. Show the form again.
+			//InstructorEditViewModel currentInfo = new InstructorEditViewModel(_config);
+			//currentInfo.Instructor = teacher.Instructor;
+			//return RedirectToAction(nameof(Index));
+			return View(teacher);
+
+			/*
+			using (IDbConnection conn = Connection)
+			{
+				IEnumerable<Cohort> cohorts = (await conn.QueryAsync<Cohort>("SELECT Id, Name FROM Cohort")).ToList();
+				// ViewData["CohortId"] = new SelectList (cohorts, "Id", "Name", student.CohortId);
+				ViewData["CohortId"] = await CohortList(student.CohortId);
+			}
+			*/
+		}
+
+
+
 
 		[HttpGet]
 		public async Task<IActionResult> Edit (int? id)
